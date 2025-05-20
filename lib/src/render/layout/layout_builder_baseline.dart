@@ -16,13 +16,14 @@ class LayoutBuilderPreserveBaseline
 
   @override
   _RenderLayoutBuilderPreserveBaseline createRenderObject(
-          BuildContext context) =>
-      _RenderLayoutBuilderPreserveBaseline();
+    BuildContext context,
+  ) => _RenderLayoutBuilderPreserveBaseline();
 }
 
 class _RenderLayoutBuilderPreserveBaseline extends RenderBox
     with
         RenderObjectWithChildMixin<RenderBox>,
+        RenderObjectWithLayoutCallbackMixin,
         RenderConstrainedLayoutBuilder<BoxConstraints, RenderBox> {
   @override
   double? computeDistanceToActualBaseline(TextBaseline baseline) =>
@@ -60,7 +61,7 @@ class _RenderLayoutBuilderPreserveBaseline extends RenderBox
   void performLayout() {
     final constraints = this.constraints;
     // layoutAndBuildChild(); // Flutter >=1.17.0 <1.18.0
-    rebuildIfNecessary(); // Flutter >=1.18.0
+    // rebuildIfNecessary(); // Flutter >=1.18.0
     if (child != null) {
       child!.layout(constraints, parentUsesSize: true);
       size = constraints.constrain(child!.size);
@@ -82,11 +83,12 @@ class _RenderLayoutBuilderPreserveBaseline extends RenderBox
     assert(() {
       if (!RenderObject.debugCheckingIntrinsics) {
         throw FlutterError(
-            'LayoutBuilder does not support returning intrinsic dimensions.\n'
-            'Calculating the intrinsic dimensions would require '
-            'running the layout '
-            'callback speculatively, which might mutate the live '
-            'render object tree.');
+          'LayoutBuilder does not support returning intrinsic dimensions.\n'
+          'Calculating the intrinsic dimensions would require '
+          'running the layout '
+          'callback speculatively, which might mutate the live '
+          'render object tree.',
+        );
       }
       return true;
     }());
